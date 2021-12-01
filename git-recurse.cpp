@@ -39,6 +39,7 @@ bool starts_with(std::string s1, std::string s2)
 int main()
 {
   auto first_path = std::filesystem::current_path();
+  int last = 1;
 
   {
     std::ifstream f(".git");
@@ -48,7 +49,9 @@ int main()
       std::stringstream ss;
       ss << exec("git log --oneline --decorate=short") << std::endl;
       getline(ss, line);
-      std::cout << "**** At .:  " << std::endl << line << std::endl;
+      std::cout << last << ") **** At .:  " << std::endl << line << std::endl;
+      std::cout << std::endl;
+      last++;
     }
   }
   
@@ -63,7 +66,9 @@ int main()
       std::stringstream ss;
       ss << exec("git log --oneline --decorate=short") << std::endl;
       getline(ss, line);
-      std::cout << "**** At " << p.path().string() << ":  " << std::endl << line << std::endl;
+      std::cout << last << ") **** At " << p.path().string() << ":  " << std::endl << line << std::endl;
+      std::cout << std::endl;
+      last++;
 
       std::filesystem::current_path(first_path);
     }
