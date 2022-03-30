@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <cstdlib>
+#include <algorithm>
 
 namespace fs = std::filesystem;
  
@@ -55,23 +56,31 @@ int main()
     }
   }
   
+  std::vector<std::string> folders;
+
   for(auto& p: fs::recursive_directory_iterator(".", fs::directory_options::skip_permission_denied))
   {
     std::ifstream f(p.path().string() + "/.git");
     if (f.good())
     {
-      std::filesystem::current_path(p.path().string());
-
-      std::string line;
-      std::stringstream ss;
-      ss << exec("git log --oneline --decorate=short") << std::endl;
-      getline(ss, line);
-      std::cout << last << ") **** At " << p.path().string() << ":  " << std::endl << line << std::endl;
-      std::cout << std::endl;
-      last++;
-
-      std::filesystem::current_path(first_path);
+      std::cout << p.path().string() << std::endl;
+      folders.push_back(p.path().string());
     }
+  }
+
+  std::sort(folders.begin(), folders.end());
+
+  for (std::string s : folders)
+  {
+    std::filesystem::current_path(s);
+    std::string line;
+    std::stringstream ss;
+    ss << exec("git log --oneline --decorate=short") << std::endl;
+    getline(ss, line);
+    std::cout << last << ") **** At " << s << ":  " << std::endl << line << std::endl;
+    std::cout << std::endl;
+    last++;
+    std::filesystem::current_path(first_path);
   }
   return 0;
 }
