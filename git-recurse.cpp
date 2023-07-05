@@ -37,10 +37,22 @@ bool starts_with(std::string s1, std::string s2)
   return true;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
   auto first_path = std::filesystem::current_path();
   int last = 1;
+
+  if (argc > 1 && (std::string(argv[1]) == "help" || std::string(argv[1]) == "--help"))
+  {
+    std::cout << "Use:" << std::endl;
+    std::cout << "git-recurse [fetch]" << std::endl;
+    return 0;
+  }
+
+
+  bool fetch = false;
+  if (argc > 1 && (std::string(argv[1]) == "fetch" || std::string(argv[1]) == "--fetch"))
+    fetch = true;
 
   {
     std::ifstream f(".git");
@@ -48,6 +60,8 @@ int main()
     {
       std::string line;
       std::stringstream ss;
+      if (fetch)
+        exec("git fetch");
       ss << exec("git log --oneline --decorate=short") << std::endl;
       getline(ss, line);
       std::cout << last << ") **** At .:  " << std::endl << line << std::endl;
@@ -75,6 +89,8 @@ int main()
     std::filesystem::current_path(s);
     std::string line;
     std::stringstream ss;
+    if (fetch)
+      exec("git fetch");
     ss << exec("git log --oneline --decorate=short") << std::endl;
     getline(ss, line);
     std::cout << last << ") **** At " << s << ":  " << std::endl << line << std::endl;
