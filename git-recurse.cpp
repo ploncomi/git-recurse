@@ -40,7 +40,6 @@ bool starts_with(std::string s1, std::string s2)
 int main(int argc, char *argv[])
 {
   auto first_path = std::filesystem::current_path();
-  int last = 1;
 
   if (argc > 1 && (std::string(argv[1]) == "help" || std::string(argv[1]) == "--help"))
   {
@@ -62,12 +61,19 @@ int main(int argc, char *argv[])
     std::cout << "Command to execute: " << ss_args.str() << std::endl;
   }
 
+  int last = 1;
+
   {
     std::ifstream f(".git");
     if (f.good())
     {
       std::string line;
       std::stringstream ss, ss_0;
+
+      if (argc > 1)
+        std::cout << "----------------------------" << std::endl;
+
+      std::cout << last << ") **** At .:  " << std::endl;
       
       if (argc > 1)
       {
@@ -77,7 +83,7 @@ int main(int argc, char *argv[])
 
       ss << exec("git log --oneline --decorate=short") << std::endl;
       getline(ss, line);
-      std::cout << last << ") **** At .:  " << std::endl << line << std::endl;
+      std::cout << line << std::endl;
       std::cout << std::endl;
       last++;
     }
@@ -104,13 +110,18 @@ int main(int argc, char *argv[])
     std::stringstream ss, ss_0;
 
     if (argc > 1)
+      std::cout << "----------------------------" << std::endl;
+
+    std::cout << last << ") **** At .:  " << std::endl;
+
+    if (argc > 1)
     {
       ss_0 << exec(ss_args.str().c_str());
       std::cout << ss_0.str()  << std::endl;
     }
 
     getline(ss, line);
-    std::cout << last << ") **** At " << s << ":  " << std::endl << line << std::endl;
+    std::cout << line << std::endl;
     std::cout << std::endl;
     last++;
     std::filesystem::current_path(first_path);
