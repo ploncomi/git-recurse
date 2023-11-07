@@ -80,10 +80,13 @@ int main(int argc, char *argv[])
         ss_0 << exec(ss_args.str().c_str());
         std::cout << ss_0.str()  << std::endl;
       }
+      else
+      {
+        ss << exec("git log --oneline --decorate=short") << std::endl;
+        getline(ss, line);
+        std::cout << line << std::endl;
+      }
 
-      ss << exec("git log --oneline --decorate=short") << std::endl;
-      getline(ss, line);
-      std::cout << line << std::endl;
       std::cout << std::endl;
       last++;
     }
@@ -119,9 +122,12 @@ int main(int argc, char *argv[])
       ss_0 << exec(ss_args.str().c_str());
       std::cout << ss_0.str()  << std::endl;
     }
-
-    getline(ss, line);
-    std::cout << line << std::endl;
+    else
+    {
+      ss << exec("git log --oneline --decorate=short") << std::endl;
+      getline(ss, line);
+      std::cout << line << std::endl;
+    }
     std::cout << std::endl;
     last++;
     std::filesystem::current_path(first_path);
