@@ -45,23 +45,36 @@ int main(int argc, char *argv[])
   if (argc > 1 && (std::string(argv[1]) == "help" || std::string(argv[1]) == "--help"))
   {
     std::cout << "Use:" << std::endl;
-    std::cout << "git-recurse [fetch]" << std::endl;
+    std::cout << "git-recurse [git commands]" << std::endl;
     return 0;
   }
 
 
-  bool fetch = false;
-  if (argc > 1 && (std::string(argv[1]) == "fetch" || std::string(argv[1]) == "--fetch"))
-    fetch = true;
+  std::stringstream ss_args;
+
+  if (argc > 1)
+  {
+    ss_args << "git";
+    for (int i=1; i<argc; i++)
+    {
+      ss_args << " " << argv[i];
+    }
+    std::cout << "Command to execute: " << ss_args.str() << std::endl;
+  }
 
   {
     std::ifstream f(".git");
     if (f.good())
     {
       std::string line;
-      std::stringstream ss;
-      if (fetch)
-        exec("git fetch");
+      std::stringstream ss, ss_0;
+      
+      if (argc > 1)
+      {
+        ss_0 << exec(ss_args.str().c_str());
+        std::cout << ss_0.str()  << std::endl;
+      }
+
       ss << exec("git log --oneline --decorate=short") << std::endl;
       getline(ss, line);
       std::cout << last << ") **** At .:  " << std::endl << line << std::endl;
@@ -88,10 +101,14 @@ int main(int argc, char *argv[])
   {
     std::filesystem::current_path(s);
     std::string line;
-    std::stringstream ss;
-    if (fetch)
-      exec("git fetch");
-    ss << exec("git log --oneline --decorate=short") << std::endl;
+    std::stringstream ss, ss_0;
+
+    if (argc > 1)
+    {
+      ss_0 << exec(ss_args.str().c_str());
+      std::cout << ss_0.str()  << std::endl;
+    }
+
     getline(ss, line);
     std::cout << last << ") **** At " << s << ":  " << std::endl << line << std::endl;
     std::cout << std::endl;
