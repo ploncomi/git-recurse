@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     if (argc > 1)
       std::cout << "----------------------------" << std::endl;
 
-    std::cout << last << ") **** At .:  " << std::endl;
+    std::cout << last << ") **** At " << s <<": " << std::endl;
 
     if (argc > 1)
     {
